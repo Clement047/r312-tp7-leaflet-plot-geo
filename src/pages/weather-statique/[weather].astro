@@ -1,0 +1,935 @@
+---
+import TP4Layout from "../../layouts/TP4Layout.astro";
+import GraphicWeather from "../../components/GraphicWeather.astro";
+import weatherData from "../../assets/weather.json";
+
+export function getStaticPaths() {
+  const weatherTypes = [
+    ...new Set(
+      weatherData.map((item) => item.weather)
+    ),
+  ];
+
+  return weatherTypes.map((weather) => ({
+    params: {
+      weather: weather,
+    },
+  }));
+}
+
+const { weather } = Astro.params;
+
+const filteredWeather = weatherData.filter(
+  (item) => item.weather === weather
+);
+
+const nombre = filteredWeather.length;
+---
+
+<TP4Layout title={`${weather} — Weather statique`}>
+
+  <section class="page-header">
+
+    <a href="/weather-statique" class="back">
+      ← Weather
+    </a>
+
+    <div class="header-layout">
+
+      <div class="heading">
+
+        <div class="tag">
+          <span class="static-icon"></span>
+          WEATHER · STATIC
+        </div>
+
+        <h1>
+          {weather}<span>.</span>
+        </h1>
+
+        <p>
+          Relation entre les températures minimales et maximales
+          pour les journées classées « {weather} ».
+        </p>
+
+      </div>
+
+
+      <div class="weather-animation">
+
+        <div class="weather-grid"></div>
+
+        <div class="static-line sl1"></div>
+        <div class="static-line sl2"></div>
+        <div class="static-line sl3"></div>
+        <div class="static-line sl4"></div>
+
+        <span class="weather-point wp1"></span>
+        <span class="weather-point wp2"></span>
+        <span class="weather-point wp3"></span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <section class="stats">
+
+    <div class="stat">
+
+      <span class="label">
+        OBSERVATIONS
+      </span>
+
+      <strong>
+        {nombre}
+      </strong>
+
+      <span class="description">
+        journées
+      </span>
+
+    </div>
+
+
+    <div class="stat">
+
+      <span class="label">
+        CONDITION
+      </span>
+
+      <strong>
+        {weather}
+      </strong>
+
+      <span class="description">
+        weather
+      </span>
+
+    </div>
+
+
+    <div class="stat">
+
+      <span class="label">
+        RENDER
+      </span>
+
+      <strong>
+        STATIC
+      </strong>
+
+      <span class="description">
+        getStaticPaths()
+      </span>
+
+    </div>
+
+  </section>
+
+
+  <section class="chart-section">
+
+    <div class="chart-heading">
+
+      <div>
+
+        <span class="chart-label">
+          01 / SCATTER PLOT
+        </span>
+
+        <h2>
+          Température min × max
+        </h2>
+
+      </div>
+
+
+      <div class="status">
+        <span></span>
+        PRE-GENERATED
+      </div>
+
+    </div>
+
+
+    <div class="chart-card">
+
+      <div class="chart-background"></div>
+
+      <span class="corner top-left"></span>
+      <span class="corner bottom-right"></span>
+
+      <div class="chart">
+        <GraphicWeather weather={weather} />
+      </div>
+
+    </div>
+
+
+    <div class="legend">
+
+      <div>
+        <span>X</span>
+
+        <strong>
+          Température minimale (°C)
+        </strong>
+      </div>
+
+
+      <div>
+        <span>Y</span>
+
+        <strong>
+          Température maximale (°C)
+        </strong>
+      </div>
+
+
+      <div>
+        <span>TYPE</span>
+
+        <strong>
+          {weather}
+        </strong>
+      </div>
+
+    </div>
+
+  </section>
+
+</TP4Layout>
+
+
+<style>
+
+  /* ============================== */
+  /* HEADER                         */
+  /* ============================== */
+
+  .page-header {
+    padding:
+      20px
+      0
+      55px;
+
+    animation:
+      reveal
+      0.65s
+      ease
+      both;
+  }
+
+
+  .back {
+    display: inline-block;
+
+    margin-bottom: 45px;
+
+    color: #74798a;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+      color
+      0.2s;
+  }
+
+
+  .back:hover {
+    color: white;
+  }
+
+
+  .header-layout {
+    display: grid;
+
+    grid-template-columns:
+      1fr
+      360px;
+
+    align-items: end;
+
+    gap: 70px;
+  }
+
+
+  .tag {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 15px;
+
+    color: #8b7cff;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+  }
+
+
+  .static-icon {
+    width: 7px;
+    height: 7px;
+
+    border:
+      1px solid
+      #8b7cff;
+
+    transform:
+      rotate(45deg);
+
+    box-shadow:
+      0 0 10px
+      rgba(139,124,255,0.5);
+  }
+
+
+  h1 {
+    margin:
+      0
+      0
+      20px;
+
+    color: white;
+
+    font-size:
+      clamp(
+        65px,
+        9vw,
+        110px
+      );
+
+    line-height: 0.85;
+
+    letter-spacing: -7px;
+
+    text-transform: capitalize;
+  }
+
+
+  h1 span {
+    color: #8b7cff;
+  }
+
+
+  .heading p {
+    max-width: 620px;
+
+    margin: 0;
+
+    color: #818696;
+
+    font-size: 16px;
+
+    line-height: 1.65;
+  }
+
+
+  /* ============================== */
+  /* WEATHER VISUAL                 */
+  /* ============================== */
+
+  .weather-animation {
+    position: relative;
+
+    height: 190px;
+
+    overflow: hidden;
+
+    border:
+      1px solid
+      rgba(139,124,255,0.13);
+
+    border-radius: 18px;
+
+    background:
+      rgba(139,124,255,0.025);
+  }
+
+
+  .weather-grid {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+      linear-gradient(
+        rgba(139,124,255,0.04) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(139,124,255,0.04) 1px,
+        transparent 1px
+      );
+
+    background-size:
+      28px
+      28px;
+  }
+
+
+  .static-line {
+    position: absolute;
+
+    left: 12%;
+
+    height: 2px;
+
+    border-radius: 20px;
+
+    background:
+      linear-gradient(
+        90deg,
+        rgba(139,124,255,0.8),
+        rgba(139,124,255,0.08)
+      );
+
+    transform-origin: left;
+
+    animation:
+      lineReveal
+      0.8s
+      ease
+      both;
+  }
+
+
+  .sl1 {
+    top: 28%;
+
+    width: 52%;
+
+    animation-delay: 0.2s;
+  }
+
+
+  .sl2 {
+    top: 43%;
+
+    width: 72%;
+
+    animation-delay: 0.3s;
+  }
+
+
+  .sl3 {
+    top: 58%;
+
+    width: 43%;
+
+    animation-delay: 0.4s;
+  }
+
+
+  .sl4 {
+    top: 73%;
+
+    width: 64%;
+
+    animation-delay: 0.5s;
+  }
+
+
+  .weather-point {
+    position: absolute;
+
+    width: 7px;
+    height: 7px;
+
+    border:
+      1px solid
+      #8b7cff;
+
+    background: #0b0d14;
+
+    transform:
+      rotate(45deg);
+
+    box-shadow:
+      0 0 10px
+      rgba(139,124,255,0.6);
+  }
+
+
+  .wp1 {
+    top: 26%;
+
+    left: 67%;
+  }
+
+
+  .wp2 {
+    top: 56%;
+
+    left: 57%;
+  }
+
+
+  .wp3 {
+    top: 71%;
+
+    left: 79%;
+  }
+
+
+  /* ============================== */
+  /* STATS                          */
+  /* ============================== */
+
+  .stats {
+    display: grid;
+
+    grid-template-columns:
+      repeat(3,1fr);
+
+    margin-bottom: 75px;
+
+    border-top:
+      1px solid
+      rgba(255,255,255,0.07);
+
+    border-bottom:
+      1px solid
+      rgba(255,255,255,0.07);
+  }
+
+
+  .stat {
+    min-height: 125px;
+
+    padding: 25px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    border-right:
+      1px solid
+      rgba(255,255,255,0.07);
+
+    transition:
+      background
+      0.3s;
+  }
+
+
+  .stat:last-child {
+    border-right: 0;
+  }
+
+
+  .stat:hover {
+    background:
+      rgba(139,124,255,0.025);
+  }
+
+
+  .label {
+    margin-bottom: 9px;
+
+    color: #585d6c;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+  }
+
+
+  .stat strong {
+    color: #f1f1f4;
+
+    font-size: 23px;
+
+    text-transform: capitalize;
+  }
+
+
+  .description {
+    margin-top: 4px;
+
+    color: #656a79;
+
+    font-size: 11px;
+  }
+
+
+  /* ============================== */
+  /* GRAPH                          */
+  /* ============================== */
+
+  .chart-section {
+    padding-bottom: 100px;
+
+    animation:
+      reveal
+      0.7s
+      0.1s
+      ease
+      both;
+  }
+
+
+  .chart-heading {
+    margin-bottom: 24px;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 30px;
+  }
+
+
+  .chart-label {
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #8b7cff;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.8px;
+  }
+
+
+  .chart-heading h2 {
+    margin: 0;
+
+    font-size:
+      clamp(
+        30px,
+        4vw,
+        44px
+      );
+
+    letter-spacing: -2px;
+  }
+
+
+  .status {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #747988;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+  }
+
+
+  .status span {
+    width: 7px;
+    height: 7px;
+
+    border:
+      1px solid
+      #8b7cff;
+
+    transform:
+      rotate(45deg);
+  }
+
+
+  /* ============================== */
+  /* GRAPH CARD                     */
+  /* ============================== */
+
+  .chart-card {
+    position: relative;
+
+    min-height: 530px;
+
+    padding: 40px;
+
+    display: grid;
+
+    place-items: center;
+
+    overflow: hidden;
+
+    border-radius: 22px;
+
+    background:
+      linear-gradient(
+        145deg,
+        #fafafd,
+        #eeeef3
+      );
+
+    box-shadow:
+      0 30px 80px
+      rgba(0,0,0,0.22);
+
+    transition:
+      transform
+      0.35s,
+      box-shadow
+      0.35s;
+  }
+
+
+  .chart-card:hover {
+    transform:
+      translateY(-4px);
+
+    box-shadow:
+      0 40px 90px
+      rgba(0,0,0,0.28);
+  }
+
+
+  .chart-background {
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0.35;
+
+    background:
+      linear-gradient(
+        rgba(20,20,30,0.035) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(20,20,30,0.035) 1px,
+        transparent 1px
+      );
+
+    background-size:
+      45px
+      45px;
+  }
+
+
+  .chart {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+
+    color: #171923;
+  }
+
+
+  /* ============================== */
+  /* CORNERS                        */
+  /* ============================== */
+
+  .corner {
+    position: absolute;
+
+    z-index: 3;
+
+    width: 25px;
+    height: 25px;
+  }
+
+
+  .top-left {
+    top: 18px;
+    left: 18px;
+
+    border-top:
+      2px solid
+      rgba(139,124,255,0.55);
+
+    border-left:
+      2px solid
+      rgba(139,124,255,0.55);
+  }
+
+
+  .bottom-right {
+    right: 18px;
+    bottom: 18px;
+
+    border-right:
+      2px solid
+      rgba(139,124,255,0.55);
+
+    border-bottom:
+      2px solid
+      rgba(139,124,255,0.55);
+  }
+
+
+  /* ============================== */
+  /* LEGEND                         */
+  /* ============================== */
+
+  .legend {
+    display: grid;
+
+    grid-template-columns:
+      repeat(3,1fr);
+
+    gap: 1px;
+
+    margin-top: 12px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background:
+      rgba(255,255,255,0.06);
+  }
+
+
+  .legend div {
+    padding:
+      14px
+      17px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    background: #10121a;
+  }
+
+
+  .legend span {
+    color: #5e6372;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+  }
+
+
+  .legend strong {
+    color: #969aa7;
+
+    font-size: 10px;
+
+    text-transform: capitalize;
+  }
+
+
+  /* ============================== */
+  /* ANIMATIONS                     */
+  /* ============================== */
+
+  @keyframes reveal {
+
+    from {
+      opacity: 0;
+
+      transform:
+        translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+
+      transform:
+        translateY(0);
+    }
+
+  }
+
+
+  @keyframes lineReveal {
+
+    from {
+      opacity: 0;
+
+      transform:
+        scaleX(0);
+    }
+
+    to {
+      opacity: 1;
+
+      transform:
+        scaleX(1);
+    }
+
+  }
+
+
+  /* ============================== */
+  /* RESPONSIVE                     */
+  /* ============================== */
+
+  @media (max-width: 850px) {
+
+    .header-layout {
+      grid-template-columns: 1fr;
+    }
+
+
+    .weather-animation {
+      height: 150px;
+    }
+
+
+    h1 {
+      letter-spacing: -4px;
+    }
+
+
+    .stats {
+      grid-template-columns: 1fr;
+    }
+
+
+    .stat {
+      border-right: 0;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,0.07);
+    }
+
+
+    .chart-card {
+      min-height: 440px;
+
+      padding:
+        25px
+        10px;
+    }
+
+
+    .legend {
+      grid-template-columns: 1fr;
+    }
+
+  }
+
+</style>

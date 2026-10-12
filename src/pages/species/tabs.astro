@@ -1,0 +1,118 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import GraphicSpecies from "../../components/GraphicSpecies.astro";
+import {
+  Tabs,
+  TabsList,
+  TabsTab,
+  TabsPanel
+} from "accessible-astro-components";
+---
+
+<Layout>
+  <div class="max-w-5xl mx-auto">
+
+    <a
+      href="/species/"
+      class="inline-flex items-center gap-2 mb-8 text-sm font-medium text-slate-500 hover:text-slate-900 transition"
+    >
+      ← Retour au slider
+    </a>
+
+    <div class="mb-8">
+      <p class="text-sm text-slate-500 mb-2">
+        Accessible Astro
+      </p>
+
+      <h1 class="text-3xl font-semibold">
+        Les espèces de pingouins
+      </h1>
+    </div>
+
+    <Tabs class="w-full">
+
+      <TabsList class="!flex !gap-2 !mb-6">
+
+        <TabsTab
+          id="tab-adelie"
+          controls="panel-adelie"
+          selected
+          class="!px-5 !py-3 !rounded-xl !border !border-slate-300 !font-medium !bg-white aria-selected:!bg-slate-900 aria-selected:!text-white"
+        >
+          Adelie
+        </TabsTab>
+
+        <TabsTab
+          id="tab-gentoo"
+          controls="panel-gentoo"
+          class="!px-5 !py-3 !rounded-xl !border !border-slate-300 !font-medium !bg-white aria-selected:!bg-slate-900 aria-selected:!text-white"
+        >
+          Gentoo
+        </TabsTab>
+
+        <TabsTab
+          id="tab-chinstrap"
+          controls="panel-chinstrap"
+          class="!px-5 !py-3 !rounded-xl !border !border-slate-300 !font-medium !bg-white aria-selected:!bg-slate-900 aria-selected:!text-white"
+        >
+          Chinstrap
+        </TabsTab>
+
+      </TabsList>
+
+
+      <TabsPanel
+        id="panel-adelie"
+        labelledby="tab-adelie"
+        selected
+        class="!bg-white !border !border-slate-200 !rounded-2xl !p-6 !shadow-sm"
+      >
+        <p class="text-sm text-slate-500 mb-2">
+          Espèce
+        </p>
+
+        <h2 class="text-2xl font-semibold mb-6">
+          Adelie
+        </h2>
+
+        <GraphicSpecies species="Adelie" />
+      </TabsPanel>
+
+
+      <TabsPanel
+        id="panel-gentoo"
+        labelledby="tab-gentoo"
+        class="!bg-white !border !border-slate-200 !rounded-2xl !p-6 !shadow-sm"
+      >
+        <p class="text-sm text-slate-500 mb-2">
+          Espèce
+        </p>
+
+        <h2 class="text-2xl font-semibold mb-6">
+          Gentoo
+        </h2>
+
+        <GraphicSpecies species="Gentoo" />
+      </TabsPanel>
+
+
+      <TabsPanel
+        id="panel-chinstrap"
+        labelledby="tab-chinstrap"
+        class="!bg-white !border !border-slate-200 !rounded-2xl !p-6 !shadow-sm"
+      >
+        <p class="text-sm text-slate-500 mb-2">
+          Espèce
+        </p>
+
+        <h2 class="text-2xl font-semibold mb-6">
+          Chinstrap
+        </h2>
+
+        <GraphicSpecies species="Chinstrap" />
+      </TabsPanel>
+
+    </Tabs>
+
+  </div>
+</Layout>

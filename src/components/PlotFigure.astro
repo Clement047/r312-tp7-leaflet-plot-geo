@@ -1,9 +1,38 @@
 ---
 import * as Plot from "@observablehq/plot";
 import { JSDOM } from "jsdom";
+
 const { options } = Astro.props;
 
-const plot = Plot.plot({ ...options, document: new JSDOM("").window.document });
+const plot = Plot.plot({
+  ...options,
+
+  // Force une couleur sombre pour les textes,
+  // graduations et labels des graphiques
+  color: "#171923",
+
+  style: {
+    background: "transparent",
+    color: "#171923",
+    fontFamily: "Arial, Helvetica, sans-serif",
+    fontSize: "12px",
+  },
+
+  document: new JSDOM("").window.document,
+});
 ---
 
-<div set:html={plot.outerHTML} />
+<div class="plot-container" set:html={plot.outerHTML} />
+
+<style>
+  .plot-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .plot-container :global(svg) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+</style>

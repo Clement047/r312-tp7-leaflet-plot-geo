@@ -1,0 +1,37 @@
+---
+import PlotFigure from "./PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+import weatherData from "../assets/weather.json";
+
+const { weather } = Astro.props;
+
+const filteredWeather = weatherData.filter(
+  (item) => item.weather === weather
+);
+---
+
+<PlotFigure
+  options={{
+    width: 700,
+    height: 450,
+
+    x: {
+      label: "Température minimale (°C)",
+      grid: true,
+    },
+
+    y: {
+      label: "Température maximale (°C)",
+      grid: true,
+    },
+
+    marks: [
+      Plot.dot(filteredWeather, {
+        x: "temp_min",
+        y: "temp_max",
+        stroke: "weather",
+        r: 4,
+      }),
+    ],
+  }}
+/>

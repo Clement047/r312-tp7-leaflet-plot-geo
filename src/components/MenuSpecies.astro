@@ -1,0 +1,42 @@
+---
+const pathname = Astro.url.pathname;
+
+let currentSpecies = "Adelie";
+
+if (pathname.includes("Chinstrap")) {
+  currentSpecies = "Chinstrap";
+} else if (pathname.includes("Gentoo")) {
+  currentSpecies = "Gentoo";
+}
+---
+
+<div class="flex flex-col gap-2 max-w-xs mb-8">
+  <label for="species" class="font-semibold">
+    Choisir une espèce
+  </label>
+
+  <select
+    id="species"
+    class="border border-slate-300 rounded-lg px-4 py-3 bg-white"
+  >
+    <option value="Adelie" selected={currentSpecies === "Adelie"}>
+      Adelie
+    </option>
+
+    <option value="Chinstrap" selected={currentSpecies === "Chinstrap"}>
+      Chinstrap
+    </option>
+
+    <option value="Gentoo" selected={currentSpecies === "Gentoo"}>
+      Gentoo
+    </option>
+  </select>
+</div>
+
+<script>
+  document.querySelector("#species")?.addEventListener("change", (evt) => {
+    const value = (evt.target as HTMLSelectElement).value;
+
+    location.pathname = "/species/" + value + "/";
+  });
+</script>

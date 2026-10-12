@@ -1,0 +1,107 @@
+---
+import TP4Layout from "../layouts/TP4Layout.astro";
+---
+
+<TP4Layout title="Cars avec filtre">
+  <p class="tag">EXERCICE 05</p>
+
+  <h1>Cars avec filtre</h1>
+
+  <p class="intro">
+    Explorez les performances des voitures en comparant leur puissance
+    et leur economie de carburant, avec un filtre sur le nombre de cylindres.
+  </p>
+
+  <div class="filters">
+    <div class="filter">
+      <label for="cylinders">Nombre de cylindres</label>
+
+      <select id="cylinders">
+        <option value="">Tous</option>
+        <option value="3">3 cylindres</option>
+        <option value="4">4 cylindres</option>
+        <option value="5">5 cylindres</option>
+        <option value="6">6 cylindres</option>
+        <option value="8">8 cylindres</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="plot-card">
+    <div id="plot"></div>
+  </div>
+</TP4Layout>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import cars from "../assets/cars.json";
+
+  const selectCylinders =
+    document.querySelector<HTMLSelectElement>("#cylinders");
+
+  function renderPlot() {
+    if (!selectCylinders) return;
+
+    const cylinders = selectCylinders.value;
+
+    const div =
+      document.querySelector<HTMLDivElement>("#plot");
+
+    if (!div) return;
+
+    div.innerHTML = "";
+
+    const plot = Plot.plot({
+      width: 900,
+      height: 520,
+
+      marginTop: 30,
+      marginRight: 30,
+      marginBottom: 55,
+      marginLeft: 65,
+
+      grid: true,
+
+      x: {
+        label: "Puissance (hp)",
+      },
+
+      y: {
+        label: "Economie de carburant (mpg)",
+      },
+
+      color: {
+        legend: true,
+        label: "Cylindres",
+      },
+
+      marks: [
+        Plot.dot(cars, {
+          x: "power (hp)",
+          y: "economy (mpg)",
+          stroke: "cylinders",
+          r: 5,
+          tip: true,
+
+          filter: (d) =>
+            cylinders === "" ||
+            d.cylinders === Number(cylinders),
+        }),
+      ],
+    });
+
+    div.append(plot);
+  }
+
+  selectCylinders?.addEventListener("change", renderPlot);
+
+  renderPlot();
+</script>
+
+<style>
+  .tag {
+    color: #8b7cff;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+</style>

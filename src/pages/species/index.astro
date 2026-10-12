@@ -1,0 +1,168 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import GraphicSpecies from "../../components/GraphicSpecies.astro";
+---
+
+<Layout>
+  <div class="grid md:grid-cols-[220px_1fr] gap-10">
+
+    <!-- MENU LATÉRAL -->
+    <aside>
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 mb-8 text-sm font-medium text-slate-500 hover:text-slate-900 transition"
+      >
+        ← Retour à l'accueil
+      </a>
+
+      <p class="text-xs uppercase tracking-widest text-slate-400 mb-3">
+        Navigation
+      </p>
+
+      <label
+        for="species-slider"
+        class="block text-sm font-medium text-slate-700 mb-2"
+      >
+        Choisir une espèce
+      </label>
+
+      <select
+        id="species-slider"
+        class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-sm"
+      >
+        <option value="adelie">Adelie</option>
+        <option value="gentoo">Gentoo</option>
+        <option value="chinstrap">Chinstrap</option>
+      </select>
+    </aside>
+
+    <!-- CONTENU -->
+    <main class="min-w-0">
+      <div class="mb-8">
+        <p class="text-sm text-slate-500 mb-2">
+          Observable Plot
+        </p>
+
+        <h1 class="text-3xl font-semibold">
+          Les espèces de pingouins
+        </h1>
+      </div>
+
+      <!-- SLIDER -->
+      <div
+        class="slider flex overflow-x-auto snap-x snap-mandatory scroll-smooth"
+      >
+        <!-- ADELIE -->
+        <section
+          id="adelie"
+          class="item min-w-full snap-start"
+        >
+          <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <p class="text-sm text-slate-500 mb-2">
+              Espèce
+            </p>
+
+            <h2 class="text-2xl font-semibold mb-6">
+              Adelie
+            </h2>
+
+            <GraphicSpecies species="Adelie" />
+          </div>
+        </section>
+
+        <!-- GENTOO -->
+        <section
+          id="gentoo"
+          class="item min-w-full snap-start"
+        >
+          <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <p class="text-sm text-slate-500 mb-2">
+              Espèce
+            </p>
+
+            <h2 class="text-2xl font-semibold mb-6">
+              Gentoo
+            </h2>
+
+            <GraphicSpecies species="Gentoo" />
+          </div>
+        </section>
+
+        <!-- CHINSTRAP -->
+        <section
+          id="chinstrap"
+          class="item min-w-full snap-start"
+        >
+          <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <p class="text-sm text-slate-500 mb-2">
+              Espèce
+            </p>
+
+            <h2 class="text-2xl font-semibold mb-6">
+              Chinstrap
+            </h2>
+
+            <GraphicSpecies species="Chinstrap" />
+          </div>
+        </section>
+      </div>
+    </main>
+
+  </div>
+</Layout>
+
+<script>
+  const select = document.querySelector("#species-slider");
+  const slider = document.querySelector(".slider");
+  const items = document.querySelectorAll(".item");
+
+  select?.addEventListener("change", (evt) => {
+    const value = (evt.target as HTMLSelectElement).value;
+
+    location.hash = value;
+  });
+
+  function updateFromHash() {
+    const hash = location.hash.replace("#", "") || "adelie";
+
+    const section = document.querySelector(`#${hash}`);
+
+    section?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "start",
+    });
+
+    if (select instanceof HTMLSelectElement) {
+      select.value = hash;
+    }
+  }
+
+  window.addEventListener("hashchange", updateFromHash);
+
+  updateFromHash();
+
+  if (slider) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute("id");
+
+            if (id && select instanceof HTMLSelectElement) {
+              select.value = id;
+            }
+          }
+        });
+      },
+      {
+        root: slider,
+        threshold: 0.5,
+      }
+    );
+
+    items.forEach((item) => {
+      observer.observe(item);
+    });
+  }
+</script>

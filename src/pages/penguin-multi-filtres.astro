@@ -1,0 +1,133 @@
+---
+import TP4Layout from "../layouts/TP4Layout.astro";
+---
+
+<TP4Layout title="Penguin multi-filtres">
+  <p class="tag">EXERCICE 04</p>
+  <h1>Penguin multi-filtres</h1>
+
+  <p class="intro">
+    Explorez le dataset Penguins en combinant les filtres
+    d'espece, d'ile et de sexe.
+  </p>
+
+  <div class="filters">
+    <div class="filter">
+      <label for="species">Espece</label>
+      <select id="species">
+        <option value="">Toutes les especes</option>
+        <option value="Adelie">Adelie</option>
+        <option value="Chinstrap">Chinstrap</option>
+        <option value="Gentoo">Gentoo</option>
+      </select>
+    </div>
+
+    <div class="filter">
+      <label for="island">Ile</label>
+      <select id="island">
+        <option value="">Toutes les iles</option>
+        <option value="Biscoe">Biscoe</option>
+        <option value="Dream">Dream</option>
+        <option value="Torgersen">Torgersen</option>
+      </select>
+    </div>
+
+    <div class="filter">
+      <label for="sex">Sexe</label>
+      <select id="sex">
+        <option value="">Tous</option>
+        <option value="MALE">MALE</option>
+        <option value="FEMALE">FEMALE</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="plot-card">
+    <div id="plot"></div>
+  </div>
+</TP4Layout>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import penguins from "../assets/penguins.json";
+
+  const selectSpecies =
+    document.querySelector<HTMLSelectElement>("#species");
+
+  const selectIsland =
+    document.querySelector<HTMLSelectElement>("#island");
+
+  const selectSex =
+    document.querySelector<HTMLSelectElement>("#sex");
+
+  function renderPlot() {
+    if (!selectSpecies || !selectIsland || !selectSex) return;
+
+    const species = selectSpecies.value;
+    const island = selectIsland.value;
+    const sex = selectSex.value;
+
+    const div =
+      document.querySelector<HTMLDivElement>("#plot");
+
+    if (!div) return;
+
+    div.innerHTML = "";
+
+    const plot = Plot.plot({
+      width: 900,
+      height: 520,
+
+      marginTop: 30,
+      marginRight: 30,
+      marginBottom: 55,
+      marginLeft: 65,
+
+      grid: true,
+
+      x: {
+        label: "Longueur du bec (mm)",
+      },
+
+      y: {
+        label: "Profondeur du bec (mm)",
+      },
+
+      color: {
+        legend: true,
+        label: "Espece",
+      },
+
+      marks: [
+        Plot.dot(penguins, {
+          x: "culmen_length_mm",
+          y: "culmen_depth_mm",
+          stroke: "species",
+          r: 5,
+          tip: true,
+
+          filter: (d) =>
+            (species === "" || d.species === species) &&
+            (island === "" || d.island === island) &&
+            (sex === "" || d.sex === sex),
+        }),
+      ],
+    });
+
+    div.append(plot);
+  }
+
+  selectSpecies?.addEventListener("change", renderPlot);
+  selectIsland?.addEventListener("change", renderPlot);
+  selectSex?.addEventListener("change", renderPlot);
+
+  renderPlot();
+</script>
+
+<style>
+  .tag {
+    color: #8b7cff;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+</style>

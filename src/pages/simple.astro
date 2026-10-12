@@ -1,0 +1,122 @@
+---
+import TP4Layout from "../layouts/TP4Layout.astro";
+---
+
+<TP4Layout title="Simple - TP4 Observable Plot">
+  <a href="/" class="retour">← Retour à l'accueil</a>
+
+  <section class="header">
+    <p class="eyebrow">DATA VISUALISATION</p>
+
+    <h1>Simple</h1>
+
+    <p class="description">
+      Premier graphique généré côté client avec Observable Plot.
+      Les données sont créées directement en JavaScript.
+    </p>
+  </section>
+
+  <section class="plot-card">
+    <div id="plot"></div>
+  </section>
+
+  <script>
+    import * as Plot from "@observablehq/plot";
+
+    const container =
+      document.querySelector<HTMLDivElement>("#plot");
+
+    function renderPlot() {
+      if (!container) return;
+
+      const donnees = Array.from(
+        { length: 10000 },
+        Math.random
+      );
+
+      const graphique = Plot.plot({
+        width: 1000,
+        height: 500,
+
+        marginTop: 30,
+        marginRight: 30,
+        marginBottom: 50,
+        marginLeft: 60,
+
+        x: {
+          label: "Valeur",
+          grid: true,
+        },
+
+        y: {
+          label: "Fréquence",
+          grid: true,
+        },
+
+        marks: [
+          Plot.rectY(
+            donnees,
+            Plot.binX(
+              { y: "count" },
+              {
+                x: (d) => d,
+                fill: "#7c5cff",
+                thresholds: 20,
+              }
+            )
+          ),
+
+          Plot.ruleY([0]),
+        ],
+      });
+
+      container.replaceChildren(graphique);
+    }
+
+    renderPlot();
+  </script>
+</TP4Layout>
+
+<style>
+  .retour {
+    display: inline-block;
+    margin-bottom: 45px;
+    color: #a9a9b8;
+    text-decoration: none;
+    transition: 0.2s;
+  }
+
+  .retour:hover {
+    color: #8b6cff;
+  }
+
+  .header {
+    max-width: 760px;
+    margin-bottom: 45px;
+  }
+
+  .eyebrow {
+    color: #8b6cff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+
+  .description {
+    color: #a9a9b8;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .plot-card {
+    background: white;
+    border-radius: 24px;
+    padding: 35px;
+    overflow-x: auto;
+  }
+
+  #plot {
+    min-width: 800px;
+  }
+</style>

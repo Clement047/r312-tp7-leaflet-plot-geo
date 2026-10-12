@@ -1,0 +1,37 @@
+---
+import PlotFigure from "./PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+import cars from "../assets/cars.json";
+
+const { cylinders } = Astro.props;
+
+const filteredCars = cars.filter(
+  (car) => car.cylinders === cylinders
+);
+---
+
+<PlotFigure
+  options={{
+    width: 700,
+    height: 450,
+
+    x: {
+      label: "Poids (lb)",
+      grid: true,
+    },
+
+    y: {
+      label: "Puissance (hp)",
+      grid: true,
+    },
+
+    marks: [
+      Plot.dot(filteredCars, {
+        x: "weight (lb)",
+        y: "power (hp)",
+        stroke: "cylinders",
+        r: 4,
+      }),
+    ],
+  }}
+/>

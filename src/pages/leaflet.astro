@@ -1,0 +1,353 @@
+
+---
+import TP4Layout from "../layouts/TP4Layout.astro";
+import "leaflet/dist/leaflet.css";
+---
+
+<TP4Layout title="Carte des établissements — Leaflet">
+
+  <a href="/" class="retour">← Retour à l'accueil</a>
+
+  <section class="hero">
+    <div class="hero-tag">
+      <span class="pulse"></span>
+      CARTOGRAPHIE / LEAFLET.JS
+    </div>
+
+    <h1>
+      Explore les
+      <span>établissements.</span>
+    </h1>
+
+    <p>
+      Une carte interactive des établissements universitaires
+      français, réalisée avec Leaflet.js et OpenStreetMap.
+      Clique sur un marqueur pour découvrir un établissement.
+    </p>
+  </section>
+
+  <section class="map-card">
+    <div class="card-top">
+      <span class="number">02 / LEAFLET.JS</span>
+      <span class="status">CARTE INTERACTIVE</span>
+    </div>
+
+    <div class="map-info">
+      <div>
+        <span class="info-label">ÉTABLISSEMENTS RÉFÉRENCÉS</span>
+        <strong id="total">—</strong>
+      </div>
+
+      <div>
+        <span class="info-label">ZONE GÉOGRAPHIQUE</span>
+        <strong>France</strong>
+      </div>
+
+      <div>
+        <span class="info-label">TECHNOLOGIE</span>
+        <strong>Leaflet + OSM</strong>
+      </div>
+    </div>
+
+    <div id="map" aria-label="Carte interactive des établissements universitaires français"></div>
+
+    <div class="card-footer">
+      <span>SOURCE / LISTE DES ÉTABLISSEMENTS</span>
+      <span>ZOOM ET NAVIGATION INTERACTIVE</span>
+    </div>
+  </section>
+
+  <script>
+    import L from "leaflet";
+    import listeEtablissements from "../assets/listeEtablissements.json";
+
+    const map = L.map("map").setView([46.6033, 1.883], 6);
+
+    L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+      }
+    ).addTo(map);
+
+    // Icône violette personnalisée
+    const markerIcon = L.divIcon({
+      className: "custom-marker",
+      html: '<span class="marker-dot"></span>',
+      iconSize: [22, 22],
+      iconAnchor: [11, 11],
+    });
+
+    // Affichage des établissements
+    let total = 0;
+
+    listeEtablissements.forEach((etablissement) => {
+      const { name, lat, lon } = etablissement;
+
+      if (
+        typeof lat !== "number" ||
+        typeof lon !== "number" ||
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lon)
+      ) {
+        return;
+      }
+
+      total++;
+
+      const marker = L.marker([lat, lon], {
+        icon: markerIcon,
+      }).addTo(map);
+
+      // Leaflet traite le contenu texte comme du HTML :
+      // on crée donc un élément DOM pour éviter toute injection.
+      const popup = document.createElement("div");
+      popup.className = "etablissement-popup";
+
+      const titre = document.createElement("strong");
+      titre.textContent = name;
+
+      const coordonnees = document.createElement("p");
+      coordonnees.textContent =
+        `Latitude : ${lat.toFixed(4)} | Longitude : ${lon.toFixed(4)}`;
+
+      popup.append(titre, coordonnees);
+      marker.bindPopup(popup);
+    });
+
+    const totalElement = document.getElementById("total");
+
+    if (totalElement) {
+      totalElement.textContent = total.toLocaleString("fr-FR");
+    }
+  </script>
+
+</TP4Layout>
+
+<style>
+  .retour {
+    display: inline-block;
+    margin-bottom: 55px;
+    color: #a9adbd;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .retour:hover {
+    color: #b5aaff;
+  }
+
+  .hero {
+    max-width: 850px;
+    margin-bottom: 60px;
+    animation: reveal 0.7s ease both;
+  }
+
+  .hero-tag {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 22px;
+    color: #a99fff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+  }
+
+  .pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #8b7cff;
+    animation: pulse 2s infinite;
+  }
+
+  h1 {
+    max-width: 850px;
+    margin: 0 0 25px;
+    color: #f4f4fa;
+    font-size: clamp(48px, 7vw, 82px);
+    line-height: 0.98;
+    letter-spacing: -4px;
+  }
+
+  h1 span {
+    color: #8b7cff;
+  }
+
+  .hero > p {
+    max-width: 700px;
+    margin: 0;
+    color: #a9adbd;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  .map-card {
+    position: relative;
+    padding: 30px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 22px;
+    background: linear-gradient(
+      145deg,
+      rgba(22, 24, 35, 0.98),
+      rgba(12, 14, 22, 0.98)
+    );
+    animation: reveal 0.7s ease both;
+  }
+
+  .card-top,
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+  }
+
+  .number,
+  .card-footer {
+    color: #a0a5b5;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+  }
+
+  .status {
+    padding: 8px 12px;
+    border: 1px solid rgba(139, 124, 255, 0.35);
+    border-radius: 999px;
+    color: #b5aaff;
+    background: rgba(139, 124, 255, 0.08);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+
+  .map-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 30px 0;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 15px;
+    background: rgba(139, 124, 255, 0.04);
+  }
+
+  .map-info > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .info-label {
+    color: #a0a5b5;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+  }
+
+  .map-info strong {
+    color: #f4f4fa;
+    font-size: 24px;
+  }
+
+  #map {
+    width: 100%;
+    height: 600px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    background: #171923;
+    z-index: 1;
+  }
+
+  .card-footer {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  :global(.custom-marker) {
+    background: transparent;
+    border: none;
+  }
+
+  :global(.marker-dot) {
+    display: block;
+    width: 16px;
+    height: 16px;
+    border: 3px solid #e5e0ff;
+    border-radius: 50%;
+    background: #8b7cff;
+    box-shadow: 0 0 12px rgba(139, 124, 255, 0.65);
+  }
+
+  :global(.etablissement-popup) {
+    min-width: 180px;
+    color: #171724;
+    font-family: Arial, sans-serif;
+  }
+
+  :global(.etablissement-popup strong) {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  :global(.etablissement-popup p) {
+    color: #555;
+    font-size: 11px;
+  }
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(139, 124, 255, 0.5);
+    }
+
+    70% {
+      box-shadow: 0 0 0 8px rgba(139, 124, 255, 0);
+    }
+
+    100% {
+      box-shadow: 0 0 0 0 rgba(139, 124, 255, 0);
+    }
+  }
+
+  @media (max-width: 800px) {
+    .map-card {
+      padding: 18px;
+    }
+
+    .map-info {
+      grid-template-columns: 1fr;
+    }
+
+    h1 {
+      letter-spacing: -2px;
+    }
+
+    #map {
+      height: 450px;
+    }
+
+    .card-footer {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

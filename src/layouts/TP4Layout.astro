@@ -1,0 +1,745 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+
+const pathname = Astro.url.pathname;
+
+const isAccueil =
+  pathname === "/";
+
+const isTousGraphiques =
+  pathname.startsWith("/toutes-les-especes") ||
+  pathname.startsWith("/tous-les-weather");
+
+const isDynamique =
+  pathname.startsWith("/rendu-dynamique") ||
+  pathname.startsWith("/weather-dynamique");
+
+const isStatique =
+  pathname.startsWith("/rendu-statique") ||
+  pathname.startsWith("/weather-statique");
+---
+
+<!doctype html>
+
+<html lang="fr">
+
+  <head>
+
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width"
+    />
+
+    <meta
+      name="description"
+      content="Exploration de données avec Astro et Observable Plot"
+    />
+
+    <title>{title}</title>
+
+  </head>
+
+
+  <body>
+
+    <!-- ===================================== -->
+    <!-- HEADER                                -->
+    <!-- ===================================== -->
+
+    <header class="site-header">
+
+      <div class="header-inner">
+
+        <!-- LOGO -->
+
+        <a
+          href="/"
+          class="logo"
+          aria-label="Retour à l'accueil"
+        >
+
+          <span>
+            PLOT
+          </span>
+
+          <span class="slash">
+            /
+          </span>
+
+          <strong>
+            LAB
+          </strong>
+
+        </a>
+
+
+        <!-- NAVIGATION -->
+
+        <nav>
+
+          <a
+            href="/"
+            class:list={{
+              active: isAccueil
+            }}
+          >
+            Accueil
+          </a>
+
+
+          <a
+            href="/toutes-les-especes"
+            class:list={{
+              active: isTousGraphiques
+            }}
+          >
+            Tous les graphiques
+          </a>
+
+
+          <a
+            href="/rendu-dynamique"
+            class:list={{
+              active: isDynamique
+            }}
+          >
+            Dynamique
+          </a>
+
+
+          <a
+            href="/rendu-statique"
+            class:list={{
+              active: isStatique
+            }}
+          >
+            Statique
+          </a>
+
+        </nav>
+
+      </div>
+
+    </header>
+
+
+    <!-- ===================================== -->
+    <!-- PAGE                                  -->
+    <!-- ===================================== -->
+
+    <main>
+
+      <slot />
+
+    </main>
+
+
+    <!-- ===================================== -->
+    <!-- FOOTER                                -->
+    <!-- ===================================== -->
+
+    <footer>
+
+      <div class="footer-inner">
+
+        <div class="footer-logo">
+
+          <span>
+            PLOT
+          </span>
+
+          <span class="slash">
+            /
+          </span>
+
+          <strong>
+            LAB
+          </strong>
+
+        </div>
+
+
+        <p>
+          Astro × Observable Plot
+        </p>
+
+      </div>
+
+    </footer>
+
+  </body>
+
+</html>
+
+
+<style is:global>
+
+  /* ======================================== */
+  /* RESET                                    */
+  /* ======================================== */
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+
+  html {
+    margin: 0;
+
+    padding: 0;
+
+    scroll-behavior: smooth;
+
+    background: #090b12;
+  }
+
+
+  body {
+    min-height: 100vh;
+
+    margin: 0;
+
+    padding: 0;
+
+    color: #f7f7fa;
+
+    background:
+      radial-gradient(
+        circle at 50% -20%,
+        rgba(139, 124, 255, 0.07),
+        transparent 35%
+      ),
+      #090b12;
+
+    font-family:
+      Inter,
+      Arial,
+      Helvetica,
+      sans-serif;
+
+    -webkit-font-smoothing:
+      antialiased;
+
+    overflow-x: hidden;
+  }
+
+
+  a {
+    color: inherit;
+  }
+
+
+  ::selection {
+    color: #090b12;
+
+    background: #8b7cff;
+  }
+
+
+  /* ======================================== */
+  /* SCROLLBAR                                */
+  /* ======================================== */
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+
+  ::-webkit-scrollbar-track {
+    background: #090b12;
+  }
+
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+
+    background: #292c39;
+  }
+
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #8b7cff;
+  }
+
+
+  /* ======================================== */
+  /* HEADER                                   */
+  /* ======================================== */
+
+  .site-header {
+    position: sticky;
+
+    z-index: 100;
+
+    top: 0;
+
+    width: 100%;
+
+    border-bottom:
+      1px solid
+      rgba(255, 255, 255, 0.07);
+
+    background:
+      rgba(9, 11, 18, 0.84);
+
+    backdrop-filter:
+      blur(18px);
+
+    -webkit-backdrop-filter:
+      blur(18px);
+  }
+
+
+  .header-inner {
+    width:
+      min(
+        1400px,
+        calc(100% - 80px)
+      );
+
+    height: 90px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 50px;
+  }
+
+
+  /* ======================================== */
+  /* LOGO                                     */
+  /* ======================================== */
+
+  .logo {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    flex-shrink: 0;
+
+    color: #f7f7fa;
+
+    font-size: 23px;
+
+    font-weight: 900;
+
+    letter-spacing: -1px;
+
+    text-decoration: none;
+
+    transition:
+      opacity 0.2s ease;
+  }
+
+
+  .logo:hover {
+    opacity: 0.8;
+  }
+
+
+  .logo .slash,
+  .footer-logo .slash {
+    color: #4f5361;
+  }
+
+
+  .logo strong,
+  .footer-logo strong {
+    color: #8b7cff;
+  }
+
+
+  /* ======================================== */
+  /* NAVIGATION                               */
+  /* ======================================== */
+
+  nav {
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 42px;
+  }
+
+
+  nav a {
+    position: relative;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    color: #9094a3;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    transition:
+      color 0.25s ease;
+  }
+
+
+  nav a:hover {
+    color: #f5f5f8;
+  }
+
+
+  nav a::after {
+    content: "";
+
+    position: absolute;
+
+    right: 0;
+
+    bottom: 27px;
+
+    left: 0;
+
+    height: 2px;
+
+    border-radius: 20px;
+
+    background: #8b7cff;
+
+    transform:
+      scaleX(0);
+
+    transform-origin:
+      right;
+
+    transition:
+      transform 0.3s
+      cubic-bezier(
+        0.2,
+        0.8,
+        0.2,
+        1
+      );
+  }
+
+
+  nav a:hover::after {
+    transform:
+      scaleX(1);
+
+    transform-origin:
+      left;
+  }
+
+
+  nav a.active {
+    color: #ffffff;
+  }
+
+
+  nav a.active::after {
+    transform:
+      scaleX(1);
+  }
+
+
+  /* ======================================== */
+  /* MAIN                                     */
+  /* ======================================== */
+
+  main {
+    width:
+      min(
+        1400px,
+        calc(100% - 80px)
+      );
+
+    min-height:
+      calc(
+        100vh - 90px
+      );
+
+    margin: 0 auto;
+
+    padding:
+      70px
+      0
+      100px;
+  }
+
+
+  /* ======================================== */
+  /* GLOBAL TITLES                            */
+  /* ======================================== */
+
+  h1,
+  h2,
+  h3,
+  h4,
+  p {
+    box-sizing: border-box;
+  }
+
+
+  h1,
+  h2,
+  h3 {
+    color: #f7f7fa;
+  }
+
+
+  /* ======================================== */
+  /* GLOBAL GRAPH FIX                         */
+  /* ======================================== */
+
+  .plot-container {
+    width: 100%;
+
+    color: #171923;
+
+    overflow-x: auto;
+  }
+
+
+  .plot-container svg {
+    display: block;
+
+    max-width: 100%;
+
+    height: auto;
+
+    margin: 0 auto;
+
+    color: #171923;
+  }
+
+
+  /* ======================================== */
+  /* FOOTER                                   */
+  /* ======================================== */
+
+  footer {
+    width: 100%;
+
+    border-top:
+      1px solid
+      rgba(255, 255, 255, 0.07);
+  }
+
+
+  .footer-inner {
+    width:
+      min(
+        1400px,
+        calc(100% - 80px)
+      );
+
+    min-height: 120px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 30px;
+  }
+
+
+  .footer-logo {
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color: #b9bcc7;
+
+    font-size: 15px;
+
+    font-weight: 900;
+  }
+
+
+  .footer-inner p {
+    margin: 0;
+
+    color: #555a69;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+  }
+
+
+  /* ======================================== */
+  /* RESPONSIVE                               */
+  /* ======================================== */
+
+  @media (max-width: 900px) {
+
+    .header-inner {
+      width:
+        min(
+          100% - 40px,
+          1400px
+        );
+
+      height: auto;
+
+      min-height: 80px;
+
+      padding:
+        20px
+        0;
+
+      align-items: flex-start;
+
+      flex-direction: column;
+
+      gap: 20px;
+    }
+
+
+    nav {
+      width: 100%;
+
+      height: auto;
+
+      gap: 28px;
+
+      overflow-x: auto;
+
+      scrollbar-width: none;
+    }
+
+
+    nav::-webkit-scrollbar {
+      display: none;
+    }
+
+
+    nav a {
+      height: 40px;
+    }
+
+
+    nav a::after {
+      bottom: 0;
+    }
+
+
+    main {
+      width:
+        min(
+          100% - 40px,
+          1400px
+        );
+
+      padding-top: 50px;
+    }
+
+
+    .footer-inner {
+      width:
+        min(
+          100% - 40px,
+          1400px
+        );
+    }
+
+  }
+
+
+  @media (max-width: 600px) {
+
+    .logo {
+      font-size: 20px;
+    }
+
+
+    nav {
+      gap: 22px;
+    }
+
+
+    nav a {
+      font-size: 12px;
+    }
+
+
+    main {
+      padding:
+        40px
+        0
+        70px;
+    }
+
+
+    .footer-inner {
+      min-height: 100px;
+
+      align-items: flex-start;
+
+      justify-content: center;
+
+      flex-direction: column;
+
+      gap: 8px;
+    }
+
+  }
+
+
+  /* ======================================== */
+  /* ACCESSIBILITÉ ANIMATIONS                 */
+  /* ======================================== */
+
+  @media (
+    prefers-reduced-motion:
+    reduce
+  ) {
+
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+
+      animation-duration:
+        0.01ms !important;
+
+      animation-iteration-count:
+        1 !important;
+
+      transition-duration:
+        0.01ms !important;
+    }
+
+  }
+
+</style>

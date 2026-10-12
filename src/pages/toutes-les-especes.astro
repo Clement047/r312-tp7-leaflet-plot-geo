@@ -1,0 +1,107 @@
+---
+import TP4Layout from "../layouts/TP4Layout.astro";
+import GraphicSpecies from "../components/GraphicSpecies.astro";
+import penguins from "../assets/penguins.json";
+
+// 1. On récupère le nom de chaque espèce avec map()
+const listeSpecies = penguins.map((penguin) => penguin.species);
+
+// 2. Set supprime automatiquement les doublons
+// 3. [...] reconvertit le Set en tableau
+const species = [...new Set(listeSpecies)];
+---
+
+<TP4Layout title="Toutes les espèces">
+
+  <main class="page">
+
+    <div class="header">
+      <p class="eyebrow">Observable Plot</p>
+
+      <h1>Toutes les espèces</h1>
+
+      <p class="description">
+        Les graphiques sont générés automatiquement à partir des espèces
+        présentes dans le dataset Penguins.
+      </p>
+    </div>
+
+
+    <!--
+      Aucun Adelie / Gentoo / Chinstrap écrit à la main :
+      on boucle directement sur la liste générée.
+    -->
+    <div class="graphiques">
+
+      {
+        species.map((nomSpecies) => (
+
+          <section class="graphique">
+
+            <h2>{nomSpecies}</h2>
+
+            <GraphicSpecies species={nomSpecies} />
+
+          </section>
+
+        ))
+      }
+
+    </div>
+
+  </main>
+
+</TP4Layout>
+
+
+<style>
+
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 30px;
+  }
+
+  .header {
+    margin-bottom: 50px;
+  }
+
+  .eyebrow {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.6;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-size: 3rem;
+    margin: 0 0 15px;
+  }
+
+  .description {
+    max-width: 700px;
+    line-height: 1.6;
+    opacity: 0.7;
+  }
+
+  .graphiques {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+  }
+
+  .graphique {
+    background: white;
+    border-radius: 24px;
+    padding: 35px;
+    overflow-x: auto;
+  }
+
+  .graphique h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.6rem;
+  }
+
+</style>

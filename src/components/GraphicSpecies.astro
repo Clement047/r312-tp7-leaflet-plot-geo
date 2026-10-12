@@ -1,0 +1,37 @@
+---
+import PlotFigure from "./PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+import penguins from "../assets/penguins.json";
+
+const { species } = Astro.props;
+
+const filteredPenguins = penguins.filter(
+  (penguin) => penguin.species === species
+);
+---
+
+<PlotFigure
+  options={{
+    width: 700,
+    height: 450,
+
+    x: {
+      label: "Longueur du bec (mm)",
+      grid: true,
+    },
+
+    y: {
+      label: "Masse corporelle (g)",
+      grid: true,
+    },
+
+    marks: [
+      Plot.dot(filteredPenguins, {
+        x: "culmen_length_mm",
+        y: "body_mass_g",
+        stroke: "sex",
+        r: 4,
+      }),
+    ],
+  }}
+/>

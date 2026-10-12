@@ -1,0 +1,693 @@
+---
+import TP4Layout from "../../layouts/TP4Layout.astro";
+---
+
+<TP4Layout title="Rendu dynamique">
+
+  <section class="hero">
+
+    <div class="hero-tag">
+      <span class="pulse"></span>
+      RENDU DYNAMIQUE
+    </div>
+
+    <h1>
+      Choisis ton
+      <span>dataset.</span>
+    </h1>
+
+    <p>
+      Les pages sont rendues dynamiquement à partir des paramètres
+      présents dans l'URL avec <code>Astro.params</code>.
+    </p>
+
+  </section>
+
+
+  <section class="datasets">
+
+    <!-- PENGUINS -->
+
+    <a
+      href="/rendu-dynamique/penguins"
+      class="dataset-card"
+    >
+
+      <div class="card-top">
+
+        <span class="number">
+          01
+        </span>
+
+        <span class="status">
+          3 ESPÈCES
+        </span>
+
+      </div>
+
+
+      <div class="visual penguins-visual">
+
+        <div class="axis axis-x"></div>
+        <div class="axis axis-y"></div>
+
+        <span class="dot d1"></span>
+        <span class="dot d2"></span>
+        <span class="dot d3"></span>
+        <span class="dot d4"></span>
+        <span class="dot d5"></span>
+        <span class="dot d6"></span>
+        <span class="dot d7"></span>
+        <span class="dot d8"></span>
+
+      </div>
+
+
+      <div class="card-content">
+
+        <div>
+
+          <p class="dataset-label">
+            DATASET
+          </p>
+
+          <h2>
+            Penguins
+          </h2>
+
+          <p class="description">
+            Explore les espèces avec Astro.params.
+          </p>
+
+        </div>
+
+        <span class="arrow">
+          ↗
+        </span>
+
+      </div>
+
+    </a>
+
+
+    <!-- WEATHER -->
+
+    <a
+      href="/weather-dynamique"
+      class="dataset-card"
+    >
+
+      <div class="card-top">
+
+        <span class="number">
+          02
+        </span>
+
+        <span class="status">
+          WEATHER
+        </span>
+
+      </div>
+
+
+      <div class="visual weather-visual">
+
+        <div class="weather-line line-1"></div>
+        <div class="weather-line line-2"></div>
+        <div class="weather-line line-3"></div>
+
+        <span class="weather-dot wd1"></span>
+        <span class="weather-dot wd2"></span>
+        <span class="weather-dot wd3"></span>
+
+      </div>
+
+
+      <div class="card-content">
+
+        <div>
+
+          <p class="dataset-label">
+            DATASET
+          </p>
+
+          <h2>
+            Weather
+          </h2>
+
+          <p class="description">
+            Explore les types de météo dynamiquement.
+          </p>
+
+        </div>
+
+        <span class="arrow">
+          ↗
+        </span>
+
+      </div>
+
+    </a>
+
+  </section>
+
+</TP4Layout>
+
+
+<style>
+
+  .hero {
+    max-width: 760px;
+    margin-bottom: 65px;
+
+    animation: reveal 0.7s ease both;
+  }
+
+
+  .hero-tag {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-bottom: 20px;
+
+    color: #8b7cff;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+  }
+
+
+  .pulse {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #8b7cff;
+
+    animation: pulse 2s infinite;
+  }
+
+
+  h1 {
+    max-width: 650px;
+
+    margin-bottom: 22px;
+
+    font-size: clamp(48px, 7vw, 82px);
+
+    line-height: 0.95;
+    letter-spacing: -4px;
+  }
+
+
+  h1 span {
+    color: #8b7cff;
+  }
+
+
+  .hero > p {
+    max-width: 650px;
+
+    margin: 0;
+
+    color: #8e93a3;
+
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+
+  code {
+    padding: 4px 7px;
+
+    border: 1px solid rgba(139, 124, 255, 0.2);
+    border-radius: 6px;
+
+    color: #b5aaff;
+
+    background: rgba(139, 124, 255, 0.08);
+
+    font-size: 0.9em;
+  }
+
+
+  /* DATASETS */
+
+  .datasets {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
+  }
+
+
+  .dataset-card {
+    position: relative;
+
+    min-height: 470px;
+
+    padding: 28px;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 22px;
+
+    color: white;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(22, 24, 35, 0.95),
+        rgba(12, 14, 22, 0.95)
+      );
+
+    text-decoration: none;
+
+    transition:
+      transform 0.35s ease,
+      border-color 0.35s ease,
+      box-shadow 0.35s ease;
+
+    animation: reveal 0.7s ease both;
+  }
+
+
+  .dataset-card:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+
+  .dataset-card::before {
+    content: "";
+
+    position: absolute;
+
+    width: 280px;
+    height: 280px;
+
+    top: -170px;
+    right: -110px;
+
+    border-radius: 50%;
+
+    background:
+      rgba(139, 124, 255, 0.12);
+
+    filter: blur(55px);
+
+    transition: 0.4s;
+  }
+
+
+  .dataset-card:hover {
+    transform: translateY(-8px);
+
+    border-color:
+      rgba(139, 124, 255, 0.55);
+
+    box-shadow:
+      0 25px 70px
+      rgba(0, 0, 0, 0.3);
+  }
+
+
+  .dataset-card:hover::before {
+    background:
+      rgba(139, 124, 255, 0.23);
+  }
+
+
+  /* CARD TOP */
+
+  .card-top {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+
+  .number {
+    color: #676c7c;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+  }
+
+
+  .status {
+    padding: 7px 10px;
+
+    border: 1px solid rgba(139, 124, 255, 0.25);
+    border-radius: 999px;
+
+    color: #a99fff;
+
+    background:
+      rgba(139, 124, 255, 0.06);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+  }
+
+
+  /* VISUALS */
+
+  .visual {
+    position: relative;
+
+    height: 230px;
+
+    margin: 25px 0 15px;
+
+    overflow: hidden;
+
+    border-radius: 15px;
+
+    background:
+      linear-gradient(
+        rgba(139, 124, 255, 0.025) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(139, 124, 255, 0.025) 1px,
+        transparent 1px
+      );
+
+    background-size: 32px 32px;
+  }
+
+
+  /* PENGUINS */
+
+  .axis {
+    position: absolute;
+
+    background:
+      rgba(255, 255, 255, 0.08);
+  }
+
+
+  .axis-x {
+    left: 35px;
+    right: 20px;
+    bottom: 30px;
+
+    height: 1px;
+  }
+
+
+  .axis-y {
+    left: 35px;
+    top: 20px;
+    bottom: 30px;
+
+    width: 1px;
+  }
+
+
+  .dot,
+  .weather-dot {
+    position: absolute;
+
+    width: 8px;
+    height: 8px;
+
+    border: 2px solid #8b7cff;
+    border-radius: 50%;
+
+    box-shadow:
+      0 0 12px
+      rgba(139, 124, 255, 0.4);
+
+    transition:
+      transform 0.35s ease;
+  }
+
+
+  .d1 { left: 18%; bottom: 25%; }
+  .d2 { left: 28%; bottom: 34%; }
+  .d3 { left: 37%; bottom: 31%; }
+  .d4 { left: 45%; bottom: 48%; }
+  .d5 { left: 56%; bottom: 43%; }
+  .d6 { left: 64%; bottom: 60%; }
+  .d7 { left: 75%; bottom: 67%; }
+  .d8 { left: 84%; bottom: 77%; }
+
+
+  .dataset-card:hover .dot {
+    transform:
+      translateY(-6px)
+      scale(1.2);
+  }
+
+
+  /* WEATHER */
+
+  .weather-line {
+    position: absolute;
+
+    left: 7%;
+
+    width: 86%;
+    height: 2px;
+
+    border-radius: 50%;
+
+    background:
+      linear-gradient(
+        90deg,
+        transparent,
+        #8b7cff,
+        #536dff,
+        transparent
+      );
+
+    transform-origin: left;
+
+    opacity: 0.65;
+  }
+
+
+  .line-1 {
+    top: 40%;
+
+    transform: rotate(-7deg);
+  }
+
+
+  .line-2 {
+    top: 58%;
+
+    transform: rotate(5deg);
+
+    opacity: 0.35;
+  }
+
+
+  .line-3 {
+    top: 70%;
+
+    transform: rotate(-3deg);
+
+    opacity: 0.2;
+  }
+
+
+  .dataset-card:hover .weather-line {
+    animation:
+      lineMove
+      1.5s
+      ease-in-out
+      infinite alternate;
+  }
+
+
+  .wd1 {
+    left: 25%;
+    top: 48%;
+  }
+
+
+  .wd2 {
+    left: 53%;
+    top: 39%;
+  }
+
+
+  .wd3 {
+    left: 77%;
+    top: 55%;
+  }
+
+
+  /* CARD CONTENT */
+
+  .card-content {
+    position: relative;
+    z-index: 2;
+
+    margin-top: auto;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 20px;
+  }
+
+
+  .dataset-label {
+    margin: 0 0 7px;
+
+    color: #686d7d;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+  }
+
+
+  h2 {
+    margin: 0 0 8px;
+
+    font-size: 30px;
+  }
+
+
+  .description {
+    margin: 0;
+
+    color: #818696;
+
+    font-size: 14px;
+  }
+
+
+  .arrow {
+    width: 46px;
+    height: 46px;
+
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    border:
+      1px solid
+      rgba(139, 124, 255, 0.3);
+
+    border-radius: 50%;
+
+    color: #8b7cff;
+
+    font-size: 20px;
+
+    transition: 0.3s;
+  }
+
+
+  .dataset-card:hover .arrow {
+    color: #0b0d14;
+
+    background: #8b7cff;
+
+    transform: rotate(45deg);
+  }
+
+
+  /* ANIMATIONS */
+
+  @keyframes reveal {
+
+    from {
+      opacity: 0;
+
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+
+      transform: translateY(0);
+    }
+
+  }
+
+
+  @keyframes pulse {
+
+    0% {
+      box-shadow:
+        0 0 0 0
+        rgba(139, 124, 255, 0.5);
+    }
+
+    70% {
+      box-shadow:
+        0 0 0 8px
+        rgba(139, 124, 255, 0);
+    }
+
+    100% {
+      box-shadow:
+        0 0 0 0
+        rgba(139, 124, 255, 0);
+    }
+
+  }
+
+
+  @keyframes lineMove {
+
+    from {
+      transform:
+        translateX(-4px)
+        rotate(-4deg);
+    }
+
+    to {
+      transform:
+        translateX(8px)
+        rotate(3deg);
+    }
+
+  }
+
+
+  @media (max-width: 800px) {
+
+    .datasets {
+      grid-template-columns: 1fr;
+    }
+
+
+    .dataset-card {
+      min-height: 420px;
+    }
+
+
+    h1 {
+      letter-spacing: -2px;
+    }
+
+  }
+
+</style>

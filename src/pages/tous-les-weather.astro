@@ -1,0 +1,145 @@
+---
+import TP4Layout from "../layouts/TP4Layout.astro";
+import GraphicWeather from "../components/GraphicWeather.astro";
+import weatherData from "../assets/weather.json";
+
+
+// --------------------------------------------------
+// RÉCUPÉRATION AUTOMATIQUE DES TYPES DE MÉTÉO
+// --------------------------------------------------
+
+// On récupère la propriété "weather" de chaque entrée
+const listeWeather = weatherData.map(
+  (item) => item.weather
+);
+
+// On supprime les doublons avec Set
+const weatherTypes = [
+  ...new Set(listeWeather)
+];
+---
+
+<TP4Layout title="Tous les types de météo">
+
+  <main class="page">
+
+    <div class="header">
+
+      <p class="eyebrow">
+        Dataset Weather
+      </p>
+
+      <h1>
+        Tous les types de météo
+      </h1>
+
+      <p class="description">
+        Les graphiques sont générés automatiquement à partir
+        des différentes valeurs présentes dans le dataset Weather.
+      </p>
+
+    </div>
+
+
+    <!--
+      Les graphiques sont générés automatiquement.
+      Aucun type de météo n'est écrit à la main.
+    -->
+    <div class="graphiques">
+
+      {
+        weatherTypes.map((weather) => (
+
+          <section class="graphique">
+
+            <h2>
+              {weather}
+            </h2>
+
+            <GraphicWeather weather={weather} />
+
+          </section>
+
+        ))
+      }
+
+    </div>
+
+  </main>
+
+</TP4Layout>
+
+
+<style>
+
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    padding: 60px 30px;
+  }
+
+
+  .header {
+    margin-bottom: 50px;
+  }
+
+
+  .eyebrow {
+    margin-bottom: 10px;
+
+    font-size: 0.85rem;
+
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+
+    opacity: 0.6;
+  }
+
+
+  h1 {
+    margin: 0 0 15px;
+
+    font-size: 3rem;
+  }
+
+
+  .description {
+    max-width: 700px;
+
+    line-height: 1.6;
+
+    opacity: 0.7;
+  }
+
+
+  .graphiques {
+    display: flex;
+    flex-direction: column;
+
+    gap: 50px;
+  }
+
+
+  .graphique {
+    padding: 35px;
+
+    background: white;
+    color: #111;
+
+    border-radius: 24px;
+
+    overflow-x: auto;
+  }
+
+
+  .graphique h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+
+    font-size: 1.6rem;
+
+    text-transform: capitalize;
+  }
+
+</style>

@@ -1,0 +1,172 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import GraphicWeather from "../../components/GraphicWeather.astro";
+---
+
+<Layout>
+  <div class="grid md:grid-cols-[220px_1fr] gap-10">
+
+    <!-- MENU LATÉRAL -->
+    <aside>
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 mb-8 text-sm font-medium text-slate-500 hover:text-slate-900 transition"
+      >
+        ← Retour à l'accueil
+      </a>
+
+      <p class="text-xs uppercase tracking-widest text-slate-400 mb-3">
+        Navigation
+      </p>
+
+      <label
+        for="weather-select"
+        class="block text-sm font-medium text-slate-700 mb-2"
+      >
+        Choisir une condition
+      </label>
+
+      <select
+        id="weather-select"
+        class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-sm"
+      >
+        <option value="sun">Soleil</option>
+        <option value="rain">Pluie</option>
+        <option value="snow">Neige</option>
+      </select>
+    </aside>
+
+    <!-- CONTENU -->
+    <main class="min-w-0">
+      <div class="mb-8">
+        <p class="text-sm text-slate-500 mb-2">
+          Observable Plot
+        </p>
+
+        <h1 class="text-3xl font-semibold">
+          Températures selon la météo
+        </h1>
+
+        <p class="text-slate-500 mt-3 max-w-2xl">
+          Comparaison entre température minimale et température maximale
+          selon différentes conditions météorologiques.
+        </p>
+      </div>
+
+      <!-- SLIDER -->
+      <div
+        class="slider flex overflow-x-auto snap-x snap-mandatory scroll-smooth"
+      >
+        <!-- SOLEIL -->
+        <section
+          id="sun"
+          class="item min-w-full snap-start"
+        >
+          <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <p class="text-sm text-slate-500 mb-2">
+              Condition
+            </p>
+
+            <h2 class="text-2xl font-semibold mb-6">
+              Soleil
+            </h2>
+
+            <GraphicWeather weather="sun" />
+          </div>
+        </section>
+
+        <!-- PLUIE -->
+        <section
+          id="rain"
+          class="item min-w-full snap-start"
+        >
+          <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <p class="text-sm text-slate-500 mb-2">
+              Condition
+            </p>
+
+            <h2 class="text-2xl font-semibold mb-6">
+              Pluie
+            </h2>
+
+            <GraphicWeather weather="rain" />
+          </div>
+        </section>
+
+        <!-- NEIGE -->
+        <section
+          id="snow"
+          class="item min-w-full snap-start"
+        >
+          <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <p class="text-sm text-slate-500 mb-2">
+              Condition
+            </p>
+
+            <h2 class="text-2xl font-semibold mb-6">
+              Neige
+            </h2>
+
+            <GraphicWeather weather="snow" />
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</Layout>
+
+<script>
+  const select = document.querySelector("#weather-select");
+  const slider = document.querySelector(".slider");
+  const items = document.querySelectorAll(".item");
+
+  select?.addEventListener("change", (evt) => {
+    const value = (evt.target as HTMLSelectElement).value;
+
+    location.hash = value;
+  });
+
+  function updateFromHash() {
+    const hash = location.hash.replace("#", "") || "sun";
+
+    const section = document.querySelector(`#${hash}`);
+
+    section?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "start",
+    });
+
+    if (select instanceof HTMLSelectElement) {
+      select.value = hash;
+    }
+  }
+
+  window.addEventListener("hashchange", updateFromHash);
+
+  updateFromHash();
+
+  if (slider) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute("id");
+
+            if (id && select instanceof HTMLSelectElement) {
+              select.value = id;
+            }
+          }
+        });
+      },
+      {
+        root: slider,
+        threshold: 0.5,
+      }
+    );
+
+    items.forEach((item) => {
+      observer.observe(item);
+    });
+  }
+</script>

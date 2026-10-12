@@ -1,0 +1,560 @@
+---
+import TP4Layout from "../../../layouts/TP4Layout.astro";
+import penguins from "../../../assets/penguins.json";
+
+const listeSpecies = penguins.map(
+  (penguin) => penguin.species
+);
+
+const species = [
+  ...new Set(listeSpecies)
+];
+---
+
+<TP4Layout title="Penguins — Rendu dynamique">
+
+  <section class="hero">
+
+    <a href="/rendu-dynamique" class="back">
+      ← Rendu dynamique
+    </a>
+
+    <div class="tag">
+      <span></span>
+      PENGUINS · DYNAMIC
+    </div>
+
+    <h1>
+      Choisis une
+      <strong>espèce.</strong>
+    </h1>
+
+    <p>
+      Sélectionne une espèce pour afficher son graphique.
+      La page correspondante récupère l'espèce grâce à
+      <code>Astro.params</code>.
+    </p>
+
+  </section>
+
+
+  <section class="species-grid">
+
+    {
+      species.map((nomSpecies, index) => (
+
+        <a
+          href={`/rendu-dynamique/${nomSpecies}`}
+          class="species-card"
+          style={`animation-delay: ${index * 100}ms`}
+        >
+
+          <div class="card-top">
+
+            <span class="number">
+              0{index + 1}
+            </span>
+
+            <span class="badge">
+              SPECIES
+            </span>
+
+          </div>
+
+
+          <div class="visual">
+
+            <div class="axis-x"></div>
+            <div class="axis-y"></div>
+
+            <span class="point p1"></span>
+            <span class="point p2"></span>
+            <span class="point p3"></span>
+            <span class="point p4"></span>
+            <span class="point p5"></span>
+
+          </div>
+
+
+          <div class="card-bottom">
+
+            <div>
+
+              <span class="label">
+                PENGUINS
+              </span>
+
+              <h2>
+                {nomSpecies}
+              </h2>
+
+            </div>
+
+            <span class="arrow">
+              ↗
+            </span>
+
+          </div>
+
+        </a>
+
+      ))
+    }
+
+  </section>
+
+</TP4Layout>
+
+
+<style>
+
+  .hero {
+    max-width: 760px;
+
+    margin-bottom: 60px;
+
+    animation:
+      reveal 0.6s ease both;
+  }
+
+
+  .back {
+    display: inline-block;
+
+    margin-bottom: 45px;
+
+    color: #74798a;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition: color 0.2s;
+  }
+
+
+  .back:hover {
+    color: white;
+  }
+
+
+  .tag {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 18px;
+
+    color: #8b7cff;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+  }
+
+
+  .tag span {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #8b7cff;
+
+    box-shadow:
+      0 0 12px
+      rgba(139, 124, 255, 0.8);
+  }
+
+
+  h1 {
+    margin:
+      0
+      0
+      20px;
+
+    color: white;
+
+    font-size:
+      clamp(50px, 7vw, 80px);
+
+    line-height: 0.95;
+
+    letter-spacing: -4px;
+  }
+
+
+  h1 strong {
+    color: #8b7cff;
+
+    font-weight: inherit;
+  }
+
+
+  .hero p {
+    max-width: 650px;
+
+    margin: 0;
+
+    color: #858a9a;
+
+    font-size: 16px;
+
+    line-height: 1.7;
+  }
+
+
+  code {
+    padding: 4px 7px;
+
+    border-radius: 6px;
+
+    color: #aea5ff;
+
+    background:
+      rgba(139, 124, 255, 0.08);
+  }
+
+
+  /* CARTES */
+
+  .species-grid {
+    display: grid;
+
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+  }
+
+
+  .species-card {
+    min-width: 0;
+
+    min-height: 390px;
+
+    padding: 24px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    border:
+      1px solid
+      rgba(255, 255, 255, 0.08);
+
+    border-radius: 20px;
+
+    color: white;
+
+    background:
+      linear-gradient(
+        145deg,
+        #171924,
+        #0e1018
+      );
+
+    text-decoration: none;
+
+    opacity: 0;
+
+    animation:
+      cardReveal 0.6s ease forwards;
+
+    transition:
+      transform 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+
+  .species-card:hover {
+    transform:
+      translateY(-7px);
+
+    border-color:
+      rgba(139, 124, 255, 0.55);
+
+    box-shadow:
+      0 25px 60px
+      rgba(0, 0, 0, 0.3);
+  }
+
+
+  .card-top {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+  }
+
+
+  .number {
+    color: #606574;
+
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+
+  .badge {
+    padding:
+      6px 9px;
+
+    border:
+      1px solid
+      rgba(139, 124, 255, 0.22);
+
+    border-radius: 999px;
+
+    color: #a89eff;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+  }
+
+
+  /* MINI GRAPHIQUE */
+
+  .visual {
+    position: relative;
+
+    height: 210px;
+
+    margin:
+      20px 0;
+
+    background:
+      linear-gradient(
+        rgba(139, 124, 255, 0.035) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(139, 124, 255, 0.035) 1px,
+        transparent 1px
+      );
+
+    background-size:
+      28px 28px;
+  }
+
+
+  .axis-x,
+  .axis-y {
+    position: absolute;
+
+    background:
+      rgba(255, 255, 255, 0.09);
+  }
+
+
+  .axis-x {
+    right: 10px;
+    bottom: 20px;
+    left: 20px;
+
+    height: 1px;
+  }
+
+
+  .axis-y {
+    top: 10px;
+    bottom: 20px;
+    left: 20px;
+
+    width: 1px;
+  }
+
+
+  .point {
+    position: absolute;
+
+    width: 8px;
+    height: 8px;
+
+    border:
+      2px solid #8b7cff;
+
+    border-radius: 50%;
+
+    background: #12141d;
+
+    box-shadow:
+      0 0 12px
+      rgba(139, 124, 255, 0.5);
+
+    transition:
+      transform 0.3s ease;
+  }
+
+
+  .p1 {
+    left: 20%;
+    bottom: 28%;
+  }
+
+
+  .p2 {
+    left: 36%;
+    bottom: 38%;
+  }
+
+
+  .p3 {
+    left: 52%;
+    bottom: 48%;
+  }
+
+
+  .p4 {
+    left: 67%;
+    bottom: 60%;
+  }
+
+
+  .p5 {
+    left: 82%;
+    bottom: 72%;
+  }
+
+
+  .species-card:hover .point {
+    transform:
+      translateY(-5px)
+      scale(1.15);
+  }
+
+
+  /* BAS CARTE */
+
+  .card-bottom {
+    margin-top: auto;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 15px;
+  }
+
+
+  .label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #626776;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+  }
+
+
+  h2 {
+    margin: 0;
+
+    color: white;
+
+    font-size: 27px;
+  }
+
+
+  .arrow {
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+
+    place-items: center;
+
+    flex-shrink: 0;
+
+    border:
+      1px solid
+      rgba(139, 124, 255, 0.3);
+
+    border-radius: 50%;
+
+    color: #8b7cff;
+
+    transition:
+      0.3s ease;
+  }
+
+
+  .species-card:hover .arrow {
+    color: #0d0f17;
+
+    background: #8b7cff;
+
+    transform:
+      rotate(45deg);
+  }
+
+
+  @keyframes reveal {
+
+    from {
+      opacity: 0;
+
+      transform:
+        translateY(15px);
+    }
+
+    to {
+      opacity: 1;
+
+      transform:
+        translateY(0);
+    }
+
+  }
+
+
+  @keyframes cardReveal {
+
+    from {
+      opacity: 0;
+
+      transform:
+        translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+
+      transform:
+        translateY(0);
+    }
+
+  }
+
+
+  @media (max-width: 900px) {
+
+    .species-grid {
+      grid-template-columns: 1fr;
+    }
+
+
+    .species-card {
+      min-height: 340px;
+    }
+
+  }
+
+</style>

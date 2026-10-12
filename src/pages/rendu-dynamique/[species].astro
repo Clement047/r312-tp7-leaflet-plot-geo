@@ -1,0 +1,763 @@
+---
+export const prerender = false;
+
+import TP4Layout from "../../layouts/TP4Layout.astro";
+import GraphicSpecies from "../../components/GraphicSpecies.astro";
+import penguins from "../../assets/penguins.json";
+
+const { species } = Astro.params;
+
+const speciesDisponibles = [
+  ...new Set(
+    penguins.map((penguin) => penguin.species)
+  ),
+];
+
+if (!species || !speciesDisponibles.includes(species)) {
+  return new Response("Espèce introuvable", {
+    status: 404,
+  });
+}
+
+const penguinsSpecies = penguins.filter(
+  (penguin) => penguin.species === species
+);
+
+const nombre = penguinsSpecies.length;
+---
+
+<TP4Layout title={`${species} — Rendu dynamique`}>
+
+  <section class="page-header">
+
+    <a href="/rendu-dynamique/penguins" class="back">
+      <span>←</span>
+      Penguins
+    </a>
+
+    <div class="header-content">
+
+      <div>
+
+        <div class="tag">
+          <span class="pulse"></span>
+          DYNAMIC · PENGUINS
+        </div>
+
+        <h1>{species}<span>.</span></h1>
+
+        <p>
+          Relation entre la longueur du bec et la masse corporelle
+          des manchots de l'espèce {species}.
+        </p>
+
+      </div>
+
+
+      <div class="route-info">
+
+        <span>ROUTE</span>
+
+        <code>
+          /rendu-dynamique/{species}
+        </code>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <section class="stats">
+
+    <div class="stat">
+
+      <span class="stat-label">
+        OBSERVATIONS
+      </span>
+
+      <strong>
+        {nombre}
+      </strong>
+
+      <span class="stat-description">
+        individus
+      </span>
+
+    </div>
+
+
+    <div class="stat">
+
+      <span class="stat-label">
+        DATASET
+      </span>
+
+      <strong>
+        Penguins
+      </strong>
+
+      <span class="stat-description">
+        Observable sample
+      </span>
+
+    </div>
+
+
+    <div class="stat">
+
+      <span class="stat-label">
+        RENDER
+      </span>
+
+      <strong>
+        SSR
+      </strong>
+
+      <span class="stat-description">
+        Astro.params
+      </span>
+
+    </div>
+
+  </section>
+
+
+  <section class="chart-section">
+
+    <div class="chart-header">
+
+      <div>
+
+        <span class="chart-index">
+          01 / SCATTER PLOT
+        </span>
+
+        <h2>
+          Bec × masse corporelle
+        </h2>
+
+      </div>
+
+
+      <div class="chart-status">
+
+        <span></span>
+
+        DATA READY
+
+      </div>
+
+    </div>
+
+
+    <div class="chart-card">
+
+      <div class="chart-grid"></div>
+
+      <div class="chart-content">
+        <GraphicSpecies species={species} />
+      </div>
+
+    </div>
+
+
+    <div class="chart-footer">
+
+      <p>
+        X
+        <strong>
+          Longueur du bec (mm)
+        </strong>
+      </p>
+
+      <p>
+        Y
+        <strong>
+          Masse corporelle (g)
+        </strong>
+      </p>
+
+      <p>
+        COLOR
+        <strong>
+          Sexe
+        </strong>
+      </p>
+
+    </div>
+
+  </section>
+
+</TP4Layout>
+
+
+<style>
+
+  /* HEADER */
+
+  .page-header {
+    padding:
+      20px
+      0
+      60px;
+
+    animation:
+      reveal
+      0.65s
+      ease
+      both;
+  }
+
+
+  .back {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 50px;
+
+    color: #717686;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition: 0.2s;
+  }
+
+
+  .back:hover {
+    color: white;
+  }
+
+
+  .header-content {
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 50px;
+  }
+
+
+  .tag {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 15px;
+
+    color: #8b7cff;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+  }
+
+
+  .pulse {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #8b7cff;
+
+    animation:
+      pulse
+      2s
+      infinite;
+  }
+
+
+  h1 {
+    margin:
+      0
+      0
+      20px;
+
+    font-size:
+      clamp(
+        65px,
+        9vw,
+        115px
+      );
+
+    line-height: 0.85;
+
+    letter-spacing: -7px;
+  }
+
+
+  h1 span {
+    color: #8b7cff;
+  }
+
+
+  .header-content p {
+    max-width: 620px;
+
+    margin: 0;
+
+    color: #818696;
+
+    font-size: 16px;
+
+    line-height: 1.65;
+  }
+
+
+  .route-info {
+    min-width: 240px;
+
+    padding: 17px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    border:
+      1px solid
+      rgba(255,255,255,0.07);
+
+    border-radius: 12px;
+
+    background:
+      rgba(255,255,255,0.02);
+  }
+
+
+  .route-info > span {
+    color: #555a68;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+  }
+
+
+  .route-info code {
+    color: #9d94ff;
+
+    font-size: 11px;
+  }
+
+
+  /* STATS */
+
+  .stats {
+    display: grid;
+
+    grid-template-columns:
+      repeat(3,1fr);
+
+    margin-bottom: 80px;
+
+    border-top:
+      1px solid
+      rgba(255,255,255,0.07);
+
+    border-bottom:
+      1px solid
+      rgba(255,255,255,0.07);
+  }
+
+
+  .stat {
+    min-height: 130px;
+
+    padding:
+      25px
+      28px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    border-right:
+      1px solid
+      rgba(255,255,255,0.07);
+
+    transition:
+      background
+      0.3s;
+  }
+
+
+  .stat:last-child {
+    border-right: 0;
+  }
+
+
+  .stat:hover {
+    background:
+      rgba(139,124,255,0.025);
+  }
+
+
+  .stat-label {
+    margin-bottom: 10px;
+
+    color: #595e6d;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+  }
+
+
+  .stat strong {
+    color: #f1f1f4;
+
+    font-size: 24px;
+  }
+
+
+  .stat-description {
+    margin-top: 4px;
+
+    color: #656a79;
+
+    font-size: 11px;
+  }
+
+
+  /* CHART */
+
+  .chart-section {
+    padding-bottom: 100px;
+
+    animation:
+      reveal
+      0.7s
+      0.15s
+      ease
+      both;
+  }
+
+
+  .chart-header {
+    margin-bottom: 25px;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 30px;
+  }
+
+
+  .chart-index {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: #8b7cff;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.8px;
+  }
+
+
+  .chart-header h2 {
+    margin: 0;
+
+    font-size:
+      clamp(
+        30px,
+        4vw,
+        45px
+      );
+
+    letter-spacing: -2px;
+  }
+
+
+  .chart-status {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color: #747988;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+  }
+
+
+  .chart-status span {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: #8b7cff;
+
+    box-shadow:
+      0 0 10px
+      rgba(139,124,255,0.8);
+  }
+
+
+  .chart-card {
+    position: relative;
+
+    min-height: 540px;
+
+    padding: 40px;
+
+    display: grid;
+
+    place-items: center;
+
+    overflow: hidden;
+
+    border:
+      1px solid
+      rgba(255,255,255,0.08);
+
+    border-radius: 22px;
+
+    background:
+      linear-gradient(
+        145deg,
+        #f8f8fa,
+        #ededf2
+      );
+
+    box-shadow:
+      0 30px 80px
+      rgba(0,0,0,0.2);
+
+    transition:
+      transform
+      0.35s,
+      box-shadow
+      0.35s;
+  }
+
+
+  .chart-card:hover {
+    transform:
+      translateY(-4px);
+
+    box-shadow:
+      0 40px 90px
+      rgba(0,0,0,0.27);
+  }
+
+
+  .chart-grid {
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    opacity: 0.35;
+
+    background:
+      linear-gradient(
+        rgba(20,20,30,0.035) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(20,20,30,0.035) 1px,
+        transparent 1px
+      );
+
+    background-size:
+      45px 45px;
+  }
+
+
+  .chart-content {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+
+    color: #171923;
+  }
+
+
+  /* FOOTER */
+
+  .chart-footer {
+    display: grid;
+
+    grid-template-columns:
+      repeat(3,1fr);
+
+    gap: 1px;
+
+    margin-top: 12px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background:
+      rgba(255,255,255,0.06);
+  }
+
+
+  .chart-footer p {
+    margin: 0;
+
+    padding:
+      14px
+      17px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    color: #5e6372;
+
+    background: #10121a;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+  }
+
+
+  .chart-footer strong {
+    color: #969aa7;
+
+    font-size: 10px;
+  }
+
+
+  /* ANIMATION */
+
+  @keyframes reveal {
+
+    from {
+      opacity: 0;
+
+      transform:
+        translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+
+      transform:
+        translateY(0);
+    }
+
+  }
+
+
+  @keyframes pulse {
+
+    0% {
+      box-shadow:
+        0 0 0 0
+        rgba(139,124,255,0.5);
+    }
+
+    70% {
+      box-shadow:
+        0 0 0 8px
+        rgba(139,124,255,0);
+    }
+
+    100% {
+      box-shadow:
+        0 0 0 0
+        rgba(139,124,255,0);
+    }
+
+  }
+
+
+  @media (max-width: 800px) {
+
+    .header-content {
+      align-items: flex-start;
+
+      flex-direction: column;
+    }
+
+
+    h1 {
+      letter-spacing: -4px;
+    }
+
+
+    .route-info {
+      width: 100%;
+    }
+
+
+    .stats {
+      grid-template-columns: 1fr;
+    }
+
+
+    .stat {
+      border-right: 0;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,0.07);
+    }
+
+
+    .stat:last-child {
+      border-bottom: 0;
+    }
+
+
+    .chart-card {
+      padding:
+        25px
+        10px;
+
+      min-height: 450px;
+    }
+
+
+    .chart-footer {
+      grid-template-columns: 1fr;
+    }
+
+  }
+
+</style>

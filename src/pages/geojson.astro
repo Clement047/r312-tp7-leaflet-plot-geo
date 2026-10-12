@@ -1,0 +1,255 @@
+
+---
+import TP4Layout from "../layouts/TP4Layout.astro";
+import PlotFigure from "../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+
+import departements from "../assets/departements.geojson.json";
+import populationMain from "../assets/populationMain.json";
+
+const selectedYear = 2015;
+const selectedSex = "Total";
+const selectedAge = "Total";
+
+const populationParDepartement = new Map(
+  populationMain
+    .filter(
+      (p) =>
+        p["Période"] === selectedYear &&
+        p["Sexe"] === selectedSex &&
+        p["Âge"] === selectedAge
+    )
+    .map((p) => [p["Géographie"], p["Valeur"]])
+);
+
+const optionPlot = {
+  width: 1050,
+  height: 850,
+
+  style: {
+    background: "#10121b",
+    color: "#e5e7f0",
+    fontFamily: "Arial, sans-serif",
+    fontSize: "13px",
+  },
+
+  title: "Population des départements français",
+
+  subtitle:
+    "Répartition de la population en 2015, tous sexes et âges confondus.",
+
+  caption:
+    "Source : données de population fournies dans le cadre du TP7.",
+
+  ariaLabel:
+    "Carte de France représentant la population par département en 2015. Les départements sont colorés selon leur population.",
+
+  projection: {
+    type: "mercator",
+    domain: departements,
+  },
+
+  color: {
+    type: "quantile",
+    n: 8,
+    scheme: "Purples",
+    label: "Population (habitants)",
+    legend: true,
+    unknown: "#343746",
+  },
+
+  marks: [
+    Plot.geo(departements, {
+      fill: (d) =>
+        populationParDepartement.get(d.properties.nom) ?? null,
+
+      stroke: "#85899c",
+      strokeWidth: 0.5,
+
+      title: (d) => {
+        const nom = d.properties.nom;
+        const population = populationParDepartement.get(nom);
+
+        return population == null
+          ? `${nom} : donnée indisponible`
+          : `${nom} : ${population.toLocaleString("fr-FR")} habitants`;
+      },
+
+      tip: true,
+    }),
+  ],
+};
+---
+
+<TP4Layout title="GeoJSON — Population française">
+
+  <a href="/" class="retour">← Retour à l'accueil</a>
+
+  <section class="hero">
+    <div class="hero-tag">
+      <span class="pulse"></span>
+      CARTOGRAPHIE / GEOJSON
+    </div>
+
+    <h1>
+      La France en
+      <span>données.</span>
+    </h1>
+
+    <p>
+      Une visualisation géographique de la population française
+      par département, réalisée avec Astro, GeoJSON et Observable Plot.
+    </p>
+  </section>
+
+  <section class="map-card">
+    <div class="card-top">
+      <span class="number">03 / OBSERVABLE PLOT</span>
+      <span class="status">RENDU CÔTÉ SERVEUR</span>
+    </div>
+
+    <div class="map-content">
+      <PlotFigure options={optionPlot} />
+    </div>
+
+    <div class="card-footer">
+      <span>DATASET / POPULATION FRANÇAISE</span>
+      <span>GEOJSON × OBSERVABLE PLOT</span>
+    </div>
+  </section>
+
+</TP4Layout>
+
+<style>
+  .retour {
+    display: inline-block;
+    margin-bottom: 55px;
+    color: #a9adbd;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .retour:hover {
+    color: #b5aaff;
+  }
+
+  .hero {
+    max-width: 850px;
+    margin-bottom: 60px;
+  }
+
+  .hero-tag {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 22px;
+    color: #a99fff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+  }
+
+  .pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #8b7cff;
+  }
+
+  h1 {
+    max-width: 850px;
+    margin: 0 0 25px;
+    color: #f4f4fa;
+    font-size: clamp(48px, 7vw, 82px);
+    line-height: 0.98;
+    letter-spacing: -4px;
+  }
+
+  h1 span {
+    color: #8b7cff;
+  }
+
+  .hero > p {
+    max-width: 700px;
+    margin: 0;
+    color: #a9adbd;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  .map-card {
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 22px;
+    background: linear-gradient(
+      145deg,
+      rgba(22, 24, 35, 0.98),
+      rgba(12, 14, 22, 0.98)
+    );
+  }
+
+  .card-top,
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .number,
+  .card-footer {
+    color: #a0a5b5;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+  }
+
+  .status {
+    padding: 8px 12px;
+    border: 1px solid rgba(139, 124, 255, 0.35);
+    border-radius: 999px;
+    color: #b5aaff;
+    background: rgba(139, 124, 255, 0.08);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+
+  .map-content {
+    margin: 30px 0;
+    padding: 20px;
+    overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    background: #10121b;
+  }
+
+  .map-content :global(figure) {
+    margin: 0;
+  }
+
+  .map-content :global(figcaption) {
+    margin-top: 18px;
+    color: #b9bdcc;
+  }
+
+  .card-footer {
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  @media (max-width: 800px) {
+    .map-card {
+      padding: 18px;
+    }
+
+    h1 {
+      letter-spacing: -2px;
+    }
+
+    .card-footer {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

@@ -1,0 +1,140 @@
+---
+import TP4Layout from "../../layouts/TP4Layout.astro";
+import weatherData from "../../assets/weather.json";
+
+
+// Récupération automatique des différents types de météo
+const listeWeather = weatherData.map(
+  (item) => item.weather
+);
+
+const weatherTypes = [
+  ...new Set(listeWeather)
+];
+---
+
+<TP4Layout title="Weather - Rendu dynamique">
+
+  <div class="header">
+
+    <p class="eyebrow">
+      Weather · Rendu dynamique
+    </p>
+
+    <h1>
+      Types de météo
+    </h1>
+
+    <p class="intro">
+      Sélectionnez un type de météo pour afficher
+      dynamiquement son graphique.
+    </p>
+
+  </div>
+
+
+  <div class="weather-list">
+
+    {
+      weatherTypes.map((weather) => (
+
+        <a
+          href={`/weather-dynamique/${weather}`}
+          class="weather-card"
+        >
+
+          <span>
+            {weather}
+          </span>
+
+          <span class="arrow">
+            →
+          </span>
+
+        </a>
+
+      ))
+    }
+
+  </div>
+
+</TP4Layout>
+
+
+<style>
+
+  .header {
+    margin-bottom: 40px;
+  }
+
+
+  .eyebrow {
+    margin: 0 0 10px;
+
+    color: #8b7cff;
+
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+
+  .intro {
+    max-width: 650px;
+  }
+
+
+  .weather-list {
+    display: grid;
+
+    grid-template-columns:
+      repeat(auto-fit, minmax(220px, 1fr));
+
+    gap: 16px;
+  }
+
+
+  .weather-card {
+    min-height: 110px;
+
+    padding: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    color: white;
+    background: #171a24;
+
+    border: 1px solid #292d3b;
+    border-radius: 16px;
+
+    text-decoration: none;
+
+    font-size: 1.2rem;
+    font-weight: 700;
+
+    text-transform: capitalize;
+
+    transition: 0.2s;
+  }
+
+
+  .weather-card:hover {
+    background: #202432;
+
+    border-color: #8b7cff;
+
+    transform: translateY(-2px);
+  }
+
+
+  .arrow {
+    color: #8b7cff;
+
+    font-size: 1.5rem;
+  }
+
+</style>
