@@ -14,7 +14,7 @@ import TP4Layout from "../layouts/TP4Layout.astro";
     </div>
 
     <h1>
-      Explore les
+      Explore les<br />
       <span>pingouins.</span>
     </h1>
 
@@ -39,82 +39,90 @@ import TP4Layout from "../layouts/TP4Layout.astro";
     </div>
   </section>
 
-  <script>
-    import * as Plot from "@observablehq/plot";
-    import penguins from "../assets/penguins.json";
-
-    const container =
-      document.querySelector<HTMLDivElement>("#plot");
-
-    function renderPlot() {
-      if (!container) return;
-
-      const graphique = Plot.plot({
-        width: 1000,
-        height: 590,
-
-        // Identité visuelle TP6
-        style: {
-          background: "#10121b",
-          color: "#e5e7f0",
-          fontFamily: "Arial, sans-serif",
-          fontSize: "13px",
-        },
-
-        // Accessibilité TP7
-        title: "Morphologie du bec des pingouins",
-
-        subtitle:
-          "Comparaison de la longueur et de la profondeur du bec selon l'espèce.",
-
-        caption:
-          "Source : dataset Penguins. Chaque point représente un pingouin. Les couleurs distinguent les trois espèces.",
-
-        ariaLabel:
-          "Nuage de points représentant la longueur et la profondeur du bec des pingouins en millimètres, avec une couleur différente pour chaque espèce.",
-
-        marginTop: 45,
-        marginRight: 35,
-        marginBottom: 65,
-        marginLeft: 75,
-
-        color: {
-          domain: ["Adelie", "Chinstrap", "Gentoo"],
-          range: ["#8b7cff", "#ffbf69", "#62d5e8"],
-          legend: true,
-        },
-
-        x: {
-          label: "Longueur du bec (mm)",
-          grid: true,
-          tickSize: 0,
-        },
-
-        y: {
-          label: "Profondeur du bec (mm)",
-          grid: true,
-          tickSize: 0,
-        },
-
-        marks: [
-          Plot.dot(penguins, {
-            x: "culmen_length_mm",
-            y: "culmen_depth_mm",
-            stroke: "species",
-            strokeWidth: 2,
-            r: 4,
-            tip: true,
-          }),
-        ],
-      });
-
-      container.replaceChildren(graphique);
-    }
-
-    renderPlot();
-  </script>
-
 </TP4Layout>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import penguins from "../assets/penguins.json";
+
+  const container = document.getElementById("plot");
+
+  function renderPlot() {
+    if (!container) return;
+
+    const graphique = Plot.plot({
+      width: 1000,
+      height: 590,
+
+      // Direction artistique PLOT / LAB
+      style: {
+        background: "#10121b",
+        color: "#e5e7f0",
+        fontFamily: "Arial, sans-serif",
+        fontSize: "13px",
+      },
+
+      // Accessibilité du graphique
+      title: "Morphologie du bec des pingouins",
+
+      subtitle:
+        "Comparaison de la longueur et de la profondeur du bec selon l'espèce.",
+
+      caption:
+        "Source : dataset Penguins. Chaque point représente un pingouin. Les couleurs distinguent les trois espèces.",
+
+      ariaLabel:
+        "Nuage de points représentant la longueur et la profondeur du bec des pingouins en millimètres, avec une couleur différente pour chaque espèce.",
+
+      marginTop: 45,
+      marginRight: 35,
+      marginBottom: 65,
+      marginLeft: 75,
+
+      color: {
+        domain: ["Adelie", "Chinstrap", "Gentoo"],
+        range: ["#8b7cff", "#ffbf69", "#62d5e8"],
+        legend: true,
+      },
+
+      x: {
+        label: "Longueur du bec (mm)",
+        grid: true,
+        tickSize: 0,
+      },
+
+      y: {
+        label: "Profondeur du bec (mm)",
+        grid: true,
+        tickSize: 0,
+      },
+
+      marks: [
+        Plot.dot(penguins, {
+          x: "culmen_length_mm",
+          y: "culmen_depth_mm",
+          stroke: "species",
+          strokeWidth: 2,
+          r: 4,
+          tip: true,
+        }),
+      ],
+    });
+
+    // Correction ciblée de l'erreur Lighthouse :
+    // retirer les aria-label des groupes SVG sans rôle explicite.
+    // On conserve les informations d'accessibilité du graphique.
+    graphique.querySelectorAll("svg g[aria-label]").forEach((element) => {
+      if (!element.hasAttribute("role")) {
+        element.removeAttribute("aria-label");
+      }
+    });
+
+    container.replaceChildren(graphique);
+  }
+
+  renderPlot();
+</script>
 
 <style>
   .retour {
@@ -130,7 +138,7 @@ import TP4Layout from "../layouts/TP4Layout.astro";
   }
 
   .hero {
-    max-width: 800px;
+    max-width: 850px;
     margin-bottom: 60px;
     animation: reveal 0.7s ease both;
   }
@@ -149,18 +157,19 @@ import TP4Layout from "../layouts/TP4Layout.astro";
   .pulse {
     width: 7px;
     height: 7px;
+    flex-shrink: 0;
     border-radius: 50%;
     background: #8b7cff;
     animation: pulse 2s infinite;
   }
 
   h1 {
-    max-width: 760px;
+    max-width: 850px;
     margin: 0 0 25px;
     color: #f4f4fa;
-    font-size: clamp(48px, 7vw, 82px);
-    line-height: 0.98;
-    letter-spacing: -4px;
+    font-size: clamp(44px, 6.5vw, 82px);
+    line-height: 1.08;
+    letter-spacing: -2.5px;
   }
 
   h1 span {
@@ -303,12 +312,32 @@ import TP4Layout from "../layouts/TP4Layout.astro";
     }
 
     h1 {
-      letter-spacing: -2px;
+      font-size: clamp(38px, 8vw, 64px);
+      letter-spacing: -1.5px;
     }
 
     .card-footer {
       flex-direction: column;
       align-items: flex-start;
+    }
+  }
+
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 36px;
+      letter-spacing: -1px;
+    }
+
+    .hero > p {
+      font-size: 15px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero,
+    .plot-card,
+    .pulse {
+      animation: none;
     }
   }
 </style>
