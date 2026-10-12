@@ -7,15 +7,12 @@ const { options } = Astro.props;
 const plot = Plot.plot({
   ...options,
 
-  // Force une couleur sombre pour les textes,
-  // graduations et labels des graphiques
-  color: "#171923",
-
   style: {
     background: "transparent",
     color: "#171923",
     fontFamily: "Arial, Helvetica, sans-serif",
     fontSize: "12px",
+    ...options.style,
   },
 
   document: new JSDOM("").window.document,
